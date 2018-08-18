@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Vue-js | Django | Crud App</title>
+    <meta name="viewport" content="width=device-width" , initial-scale="1.0">
+    <meta name="description" content="A simple crud app made with the vue js and django">
+
+    <meta name="keywords" content="vuejs, django, crudapp, restapi">
+    <!-- bootstap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <!-- boostrap css -->
+
+</head>
+
+<body>
+    <div id="starting">
+        <div class="container">
+            <div class="row">
+                <h1>List of Recipes
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addRecipeModal">New Recipe
+                    </button>
+                </h1>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="recipe in recipes">
+                            <th scope="row">${recipe.recipe_id}</th>
+                            <td>${recipe.recipe_title}</td>
+                            <td>
+                                <button class="btn btn-info" v-on:click="getRecipe(recipe.recipe_id)">Edit</button>
+                                <button class="btn btn-danger" v-on:click="deleteRecipe(recipe.recipe_id)">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Add Recipe Modal -->
+                <div class="modal fade" id="addRecipeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">ADD RECIPE</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form v-on:submit.prevent="addRecipe()">
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="recipe_title">Recipe Heading</label>
+                                        <input type="text" class="form-control" id="recipe_title" placeholder="Enter Recipe Heading" v-model="newRecipe.recipe_title" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="recipe_text">Recipe Body</label>
+                                        <textarea class="form-control" id="recipe_text" placeholder="Enter Recipe Body" v-model="newRecipe.recipe_text" required="required" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="loading" v-if="loading===true">Loading&#8230;</div>
+                </div>
+                <!-- End of add recipe modal -->
+
+                <!-- Edit Recipe Modal -->
+                <div class="modal fade" id="editRecipeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">EDIT RECIPE</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form v-on:submit.prevent="updateRecipe()">
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="recipe_title">Recipe Title</label>
+                                        <input type="text" class="form-control" id="recipe_title" placeholder="Enter Recipe Title" v-model="currentRecipe.recipe_title"
+                                            required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="recipe_text">Recipe Text</label>
+                                        <textarea class="form-control" id="recipe_text" placeholder="Enter Recipe Text" v-model="currentRecipe.recipe_text" required="required" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="loading" v-if="loading===true">Loading&#8230;</div>
+                </div>
+                <!-- End of edit recipe modal -->
+            </div>
+        </div>
+        <div class="loading" v-if="loading===true">Loading&#8230;</div>
+    </div>
+
+
+
+    <!-- bootrtap js files -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous">
+        </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js " integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous">
+        </script>
+
+    <!-- vue.js files -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5 "></script>
+
+
+
+    <script type="text/javascript">
+        new Vue({
+            el: '#starting',
+            delimiters: ['${', '}'],
+            data:
+            {
+                recipes: [],
+                loading: false,
+                currentRecipe: {},
+                message: null,
+                newRecipe: {
+                    'recipe_title': null,
+                    'recipe_text': null
+                }
+            },
+            mounted: function()
+            {
+                this.getRecipes();
+            },
+            methods:
+            {
+                getRecipes: function ()
+                {
+                    this.loading = true;
+                    this.$http.get('/api/recipe/')
+                        .then((response) => 
+                        {
+                            this.recipes = response.data;
+                            this.loading = false;
+                        })
+                        .catch((err) => 
+                        {
+                            this.loading = false;
+                            console.log(err);
+                        })
+                },
+                
+                getRecipe: function (id)
+                {
+                    this.loading = true;
+                    this.$http.get(`/api/recipe/${id}`)
+                        .then((response) => 
+                        {
+                            this.currentRecipe = response.data;
+                            $("#editRecipeModal").modal("show");
+                            this.loading = false;
+                        })
+                        .catch((err) => 
+                        {
+                            this.loading = false;
+                            console.log(err);
+                        })
+                },
+                addRecipe: function ()
+                {
+                    this.loading = true;
+                    this.$http.post('/api/recipe/', this.newRecipe)
+                        .then((response) => 
+                        {
+                            this.loading = false;
+                            this.getRecipes()
+                        })
+                        .catch((err) => 
+                        {
+                            this.loading = false;
+                            console.log(err);
+                        })
+                },
+                updateRecipe: function ()
+                {
+                    this.loading = true;
+                    this.$http.put(`/api/recipe/${this.currentRecipe.recipe_id}/`, this.currentRecipe)
+                        .then((response) => 
+                        {
+                            this.loading = false;
+                            this.currentRecipe = response.data
+                            this.getRecipes()
+                        })
+                        .catch((err) => 
+                        {
+                            this.loading = false;
+                            console.log(err);
+                        })
+                },
+                deleteRecipe: function (id)
+                {
+                    this.loading = true;
+                    this.$http.delete(`/api/recipe/${id}/`)
+                        .then((response) => 
+                        {
+                            this.loading = false;
+                            this.getRecipes()
+                        })
+                        .catch((err) => 
+                        {
+                            this.loading = false;
+                            console.log(err);
+                        })
+                },
+            }
+        })
+    </script>
+</body>
+
+</html>Recipes
