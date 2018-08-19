@@ -57,8 +57,11 @@
                                     <textarea v-model="step.action" placeholder="Action" style="background: none; border: none; color: black;"></textarea>
                                 </td>
                             </tr>
+                            
                         </tbody>
                     </table>
+                    <button v-on:click='steps.push({"amount":"", "action":"", "ingredient":""})' class="btn btn-primary">Add Step</button>
+
                 </div>
             </div>
 
