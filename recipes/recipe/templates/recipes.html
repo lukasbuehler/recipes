@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Vue-js | Django | Crud App</title>
+    <title>Recipes</title>
     <meta name="viewport" content="width=device-width" , initial-scale="1.0">
     <meta name="description" content="A simple crud app made with the vue js and django">
 
@@ -16,7 +16,7 @@
 </head>
 
 <body>
-    <div id="starting">
+    <div id="recipes">
         <div class="container">
             <div class="row">
                 <h1>List of Recipes
@@ -133,7 +133,7 @@
 
     <script type="text/javascript">
         new Vue({
-            el: '#starting',
+            el: '#recipes',
             delimiters: ['${', '}'],
             data:
             {
@@ -192,6 +192,7 @@
                         {
                             this.loading = false;
                             this.getRecipes()
+                            $("#addRecipeModal").modal("hide");
                         })
                         .catch((err) => 
                         {
@@ -208,6 +209,7 @@
                             this.loading = false;
                             this.currentRecipe = response.data
                             this.getRecipes()
+                            $("#editRecipeModal").modal("hide");
                         })
                         .catch((err) => 
                         {
@@ -235,4 +237,4 @@
     </script>
 </body>
 
-</html>Recipes
+</html>
