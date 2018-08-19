@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Recipes</title>
+    <title>Recipe List</title>
     <meta name="viewport" content="width=device-width" , initial-scale="1.0">
     <meta name="description" content="A simple crud app made with the vue js and django">
 
@@ -19,30 +19,29 @@
     <div id="recipes">
         <div class="container">
             <div class="row">
-                <h1>Recipes
-                    <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#addRecipeModal">New
-                        Recipe
+                <h1>List of Recipes
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addRecipeModal">New Recipe
                     </button>
                 </h1>
-                <div class="container-fluid">
-                    <div v-show="false" class="row my-plan">
-                        <div v-for="meal in planned_meals"></div>
-                    </div>
-                    <div class="row recommended-recipes">
-                        <div v-for="recipe in recommended_recipes" class="col-sm-4" style="margin-bottom: 15px;">
-                            <div class="card" style="z-index: 999; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important">
-                                <img class="card-img-top" src="https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg?cs=srgb&dl=food-dinner-lunch-70497.jpg&fm=jpg"
-                                    alt="Card image">
-                                <div class="card-body">
-                                    <h5 class="card-title">${recipe.title}</h5>
-                                    <p class="card-text">${recipe.text}</p>
-                                    <a v-bind:href="'/recipe/'+recipe.id+'/'" class="btn btn-primary">Visit</a>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="recipe in recipes">
+                            <th scope="row">${recipe.id}</th>
+                            <td>${recipe.title}</td>
+                            <td>
+                                <button class="btn btn-info" v-on:click="getRecipe(recipe.id)">Edit</button>
+                                <button class="btn btn-danger" v-on:click="deleteRecipe(recipe.id)">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
                 <!-- Add Recipe Modal -->
                 <div class="modal fade" id="addRecipeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -62,8 +61,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="recipe_text">Recipe Body</label>
-                                        <textarea class="form-control" id="recipe_text" placeholder="Enter Recipe Body" v-model="newRecipe.text" required="required"
-                                            rows="3"></textarea>
+                                        <textarea class="form-control" id="recipe_text" placeholder="Enter Recipe Body" v-model="newRecipe.text" required="required" rows="3"></textarea>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -77,6 +75,38 @@
                 </div>
                 <!-- End of add recipe modal -->
 
+                <!-- Edit Recipe Modal -->
+                <div class="modal fade" id="editRecipeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">EDIT RECIPE</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form v-on:submit.prevent="updateRecipe()">
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="recipe_title">Recipe Title</label>
+                                        <input type="text" class="form-control" id="recipe_title" placeholder="Enter Recipe Title" v-model="currentRecipe.title"
+                                            required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="recipe_text">Recipe Text</label>
+                                        <textarea class="form-control" id="recipe_text" placeholder="Enter Recipe Text" v-model="currentRecipe.text" required="required" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="loading" v-if="loading===true">Loading&#8230;</div>
+                </div>
+                <!-- End of edit recipe modal -->
             </div>
         </div>
         <div class="loading" v-if="loading===true">Loading&#8230;</div>
@@ -85,7 +115,7 @@
 
 
     <!-- bootrtap js files -->
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous">
         </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js " integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
@@ -107,15 +137,16 @@
             delimiters: ['${', '}'],
             data:
             {
-                recommended_recipes: [],
-                planned_meals: [],
+                recipes: [],
                 loading: false,
+                currentRecipe: {},
+                message: null,
                 newRecipe: {
                     'title': null,
                     'text': null
                 }
             },
-            mounted: function ()
+            mounted: function()
             {
                 this.getRecipes();
             },
@@ -127,7 +158,7 @@
                     this.$http.get('/api/recipe/')
                         .then((response) => 
                         {
-                            this.recommended_recipes = response.data;
+                            this.recipes = response.data;
                             this.loading = false;
                         })
                         .catch((err) => 
@@ -136,7 +167,7 @@
                             console.log(err);
                         })
                 },
-
+                
                 getRecipe: function (id)
                 {
                     this.loading = true;
@@ -168,7 +199,39 @@
                             this.loading = false;
                             console.log(err);
                         })
-                }
+                },
+                updateRecipe: function ()
+                {
+                    this.loading = true;
+                    this.$http.put(`/api/recipe/${this.currentRecipe.id}/`, this.currentRecipe)
+                        .then((response) => 
+                        {
+                            this.loading = false;
+                            this.currentRecipe = response.data
+                            this.getRecipes()
+                            $("#editRecipeModal").modal("hide");
+                        })
+                        .catch((err) => 
+                        {
+                            this.loading = false;
+                            console.log(err);
+                        })
+                },
+                deleteRecipe: function (id)
+                {
+                    this.loading = true;
+                    this.$http.delete(`/api/recipe/${id}/`)
+                        .then((response) => 
+                        {
+                            this.loading = false;
+                            this.getRecipes()
+                        })
+                        .catch((err) => 
+                        {
+                            this.loading = false;
+                            console.log(err);
+                        })
+                },
             }
         })
     </script>

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>${recipe.recipe_title}</title>
+    <title>Recipe Details</title>
     <meta name="viewport" content="width=device-width" , initial-scale="1.0">
     <meta name="description" content="A simple crud app made with the vue js and django">
 
@@ -18,8 +18,8 @@
 <body>
     <div id="recipe">
         <div class="container">
-            <div class="row">
-                <h1>${recipe.recipe_title}</h1>
+            <div v-if="!error.state" class="row">
+                <h1 >${recipe.title}</h1>
                 <table class="table">
                     <tbody>
                         <tr v-for="step in steps">
@@ -28,7 +28,9 @@
                         </tr>
                     </tbody>
                 </table>
-
+            </div>
+            <div v-else>
+                <h1>Error ${error.code}: ${error.text}</h1>
             </div>
         </div>
         <div class="loading" v-if="loading===true">Loading&#8230;</div>
@@ -66,12 +68,17 @@
                 newRecipe: {
                     'step_ingredent_amount': null,
                     'step_action': null
+                },
+                error: {
+                    state: false,
+                    code: null,
+                    text: null
                 }
             },
             mounted: function()
             {
-                console.log(id);
-                this.getRecipe(id);
+                var recipe_id = parseInt("{{recipe_id}}");
+                this.getRecipe(recipe_id);
             },
             methods:
             {                
@@ -88,6 +95,9 @@
                         {
                             this.loading = false;
                             console.log(err);
+                            this.error.state = true;
+                            this.error.code = err.status;
+                            this.error.text = err.statusText;
                         })
                 },
                 updateRecipe: function ()

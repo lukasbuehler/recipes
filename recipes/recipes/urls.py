@@ -28,6 +28,9 @@ urlpatterns = [
     path('api/', include(router.urls)),
 
     path('', TemplateView.as_view(template_name='index.html'), name='home'),
+
+    path('recipe_list/', TemplateView.as_view(template_name='recipe_list.html')),
+    
     path('recipes/', TemplateView.as_view(template_name='recipes.html')),
-    path('recipe/<int:recipe_id>/', RecipeView.as_view(), name="recipe"),
+    path('recipe/<int:recipe_id>/', RecipeView.as_view(), name="recipe_details"),
 ]
