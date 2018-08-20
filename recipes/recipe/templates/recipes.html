@@ -13,6 +13,8 @@
         crossorigin="anonymous">
     <!-- boostrap css -->
 
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+
 </head>
 
 <body>
@@ -29,13 +31,14 @@
                         <div v-for="meal in planned_meals"></div>
                     </div>
                     <div class="row recommended-recipes">
-                        <div v-for="recipe in recommended_recipes" class="col-md-4 col-sm-6" style="margin-bottom: 15px;">
+                        <div v-for="recipe in recommended_recipes" class="col-lg-4 col-sm-6" style="margin-bottom: 15px;">
                             <div class="card" style="z-index: 999; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important">
                                 <img class="card-img-top" src="https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg?cs=srgb&dl=food-dinner-lunch-70497.jpg&fm=jpg"
                                     alt="Card image">
                                 <div class="card-body">
                                     <h5 class="card-title">${recipe.title}</h5>
-                                    <p class="card-text"><span v-for="(foo, i) in Math.round(recipe.rating)">*</span></p>
+                                    <p class="card-text">
+                                        <i v-for="(foo, i) in Math.round(recipe.rating)" class="fas fa-star" style="color: gold;"></i>
                                     <p class="card-text">By ${"User"}</p>
                                     <a v-bind:href="'/recipe/'+recipe.id+'/'" class="btn btn-primary">Visit</a>
                                 </div>

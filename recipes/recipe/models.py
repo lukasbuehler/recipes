@@ -31,6 +31,7 @@ class Ingredient(models.Model):
 
 
 class Step(models.Model):
+    text = models.CharField(max_length=100, null=True)
     action = models.ForeignKey(Action, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, null=True)
     amount = models.FloatField(null=True)
