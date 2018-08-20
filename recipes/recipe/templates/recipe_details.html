@@ -13,7 +13,8 @@
         crossorigin="anonymous">
     <!-- boostrap css -->
 
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+        crossorigin="anonymous">
 
 </head>
 
@@ -49,13 +50,14 @@
                             <tr v-for="(step, i) in steps">
                                 <th style="width: 75px;">${i+1}</th>
                                 <td>
-                                    <input v-model="step.text" type="text" placeholder="What to do" style="background: none; border: none; color: inherit;">
+                                    <textarea v-model="step.text" class="autoExpand" rows="1" data-min-rows="1" placeholder="What to do" style="display: block; box-sizing: padding-box; overflow: hidden;background: none; border: none; color: inherit; width: 100%;"></textarea>
                                 </td>
                             </tr>
-                            
+
                         </tbody>
                     </table>
-                    <button v-on:click='steps.push({"amount":"", "action":"", "ingredient":""})' class="btn btn-primary">Add Step</button>
+                    <button v-on:click='steps.push({"amount":"", "action":"", "ingredient":""})' class="btn btn-primary">Add
+                        Step</button>
 
                 </div>
             </div>
@@ -201,6 +203,22 @@
                 }
             }
         })
+
+        $(document)
+            .one('focus.autoExpand', 'textarea.autoExpand', function ()
+            {
+                var savedValue = this.value;
+                this.value = '';
+                this.baseScrollHeight = this.scrollHeight;
+                this.value = savedValue;
+            })
+            .on('input.autoExpand', 'textarea.autoExpand', function ()
+            {
+                var minRows = this.getAttribute('data-min-rows') | 0, rows;
+                this.rows = minRows;
+                rows = Math.ceil((this.scrollHeight - this.baseScrollHeight) / 16);
+                this.rows = minRows + rows;
+            });
     </script>
 </body>
 
