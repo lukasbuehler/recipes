@@ -33,7 +33,7 @@
                     <div class="row recommended-recipes">
                         <div v-for="recipe in recommended_recipes" class="col-lg-4 col-sm-6" style="margin-bottom: 15px;">
                             <div class="card" style="z-index: 999; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important">
-                                <img class="card-img-top" src="https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg?cs=srgb&dl=food-dinner-lunch-70497.jpg&fm=jpg"
+                                <img class="card-img-top" v-bind:src="recipe.image"
                                     alt="Card image">
                                 <div class="card-body">
                                     <h5 class="card-title">${recipe.title}</h5>

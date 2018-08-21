@@ -12,13 +12,6 @@ class Utensil(models.Model):
     category = models.ForeignKey(UtensilCategory, on_delete=models.CASCADE)
 
 
-
-
-class Action(models.Model):
-    description = models.CharField(max_length=250)
-    verb = models.CharField(max_length=50)
-    utensil = models.ForeignKey(Utensil, on_delete=models.CASCADE, null=True)
-
 class IngredientCategory(models.Model):
     name = models.CharField(max_length=250)
 
@@ -26,22 +19,18 @@ class Ingredient(models.Model):
     name = models.CharField(max_length=250)
     #category = models.ForeignKey(IngredientCategory, on_delete=models.CASCADE)
     #recipeToMake = models.ForeignKey(Recipe, blank=True, on_delete=models.CASCADE)
-    
-
 
 
 class Step(models.Model):
     text = models.CharField(max_length=100, null=True)
-    action = models.ForeignKey(Action, on_delete=models.CASCADE)
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, null=True)
-    amount = models.FloatField(null=True)
-
+    vars = models.CharField(max_length=10000, null=True)
 
 class Recipe(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=250)
     #author = 
     #category = 
+    image = models.ImageField(upload_to="recipe-images/", null=True)
     description = models.TextField()
     rating = models.FloatField(
         null=True,

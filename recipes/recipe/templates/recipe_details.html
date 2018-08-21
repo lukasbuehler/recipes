@@ -35,9 +35,10 @@
                     <p>
                         ${recipe.description}
                     </p>
+                    <img v-bind:src="recipe.image" v-bind:alt="recipe.title+' image'" class="rounded" style='max-height: 50vh; max-width: 100%'>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" style="margin-top: 20px;">
                 <div class="col-sm-6">
                     <h5>Steps</h5>
                 </div>
@@ -216,7 +217,7 @@
             {
                 var minRows = this.getAttribute('data-min-rows') | 0, rows;
                 this.rows = minRows;
-                rows = Math.ceil((this.scrollHeight - this.baseScrollHeight) / 16);
+                rows = Math.ceil((this.scrollHeight - this.baseScrollHeight) / 24);
                 this.rows = minRows + rows;
             });
     </script>

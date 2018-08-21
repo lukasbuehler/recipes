@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Recipe, Step, Action, Ingredient, IngredientCategory, Utensil, UtensilCategory
+from .models import Recipe, Step, Ingredient, IngredientCategory, Utensil, UtensilCategory
 
 class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,11 +9,6 @@ class RecipeSerializer(serializers.ModelSerializer):
 class StepSerializer(serializers.ModelSerializer):
     class Meta:
         model = Step
-        fields = '__all__'
-
-class ActionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Action
         fields = '__all__'
 
 class IngredientSerializer(serializers.ModelSerializer):
