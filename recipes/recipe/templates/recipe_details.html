@@ -19,6 +19,30 @@
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-sm navbar-light bg-light" style="margin-bottom: 20px;">
+        <a class="navbar-brand" href="/recipes/">Recipes</a>
+        
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto mt-2 mt-sm-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/recipes/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/recipes/">Discrover</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-sm-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-primary my-2 my-sm-0 mr-sm-2" type="submit">Search</button>
+            </form>
+            <img src="https://www.cwejournal.org/images/user.jpg" alt="User" class="rounded-circle" style="max-height: 40px;">
+
+        </div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
     <div id="recipe">
         <div v-if="!error.state" class="container">
             <div class="row">
@@ -35,7 +59,12 @@
                     <p>
                         ${recipe.description}
                     </p>
+                </div>
+                <div class="col-md-12">
                     <img v-bind:src="recipe.image" v-bind:alt="recipe.title+' image'" class="rounded" style='max-height: 50vh; max-width: 100%'>
+                </div>
+                <div class="col-md-12">
+                    <input type="file" name="image" />
                 </div>
             </div>
             <div class="row" style="margin-top: 20px;">
@@ -58,7 +87,8 @@
                         </tbody>
                     </table>
                     <button v-on:click='steps.push({"amount":"", "action":"", "ingredient":""})' class="btn btn-primary">Add
-                        Step</button>
+                        Step
+                    </button>
 
                 </div>
             </div>
@@ -70,7 +100,9 @@
         </div>
     </div>
 
-    <div class="loading" v-if="loading===true">Loading&#8230;</div>
+    <!--
+        <div class="loading" v-if="loading===true">Loading&#8230;</div>
+    -->
     </div>
 
 
