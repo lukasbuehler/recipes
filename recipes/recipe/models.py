@@ -25,12 +25,15 @@ class Step(models.Model):
     text = models.CharField(max_length=100, null=True)
     vars = models.CharField(max_length=10000, null=True)
 
+    def __str__(self):
+        return self.text
+
 class Recipe(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=250)
     #author = 
     #category = 
-    image = models.ImageField(upload_to="recipe-images/", null=True)
+    image = models.ImageField(upload_to="images/recipes/", null=True)
     description = models.TextField()
     rating = models.FloatField(
         null=True,
@@ -48,3 +51,7 @@ class Recipe(models.Model):
     steps = models.ManyToManyField(Step)
     #ingredients = 
 
+    def __str__(self):
+            return self.title+" ("+str(self.id)+")"
+
+    
