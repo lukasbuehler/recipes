@@ -52,6 +52,6 @@ class Recipe(models.Model):
     #ingredients = 
 
     def __str__(self):
-            return self.title+" ("+str(self.id)+")"
+        return self.title+" ("+str(self.id)+")"
 
     

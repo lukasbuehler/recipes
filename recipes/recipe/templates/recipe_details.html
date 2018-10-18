@@ -53,7 +53,16 @@
                     </h5>
                 </div>
                 <div class="col-sm-6 text-right">
-                    <h5>By ${"User"}</h5>
+                    <p>
+                        <h5>By ${"User"}</h5>
+                    </p>
+                    <p v-if="!editing">
+                        <button v-on:click='editRecipe()' class="btn btn-primary">Edit</button>
+                    </p>
+                    <p v-else>
+                        <button v-on:click='discardEditingChanges()' class="btn btn-danger">Discard</button>
+                        <button v-on:click='saveEditingChanges()' class="btn btn-primary">Save</button>
+                    </p>
                 </div>
                 <div class="col-md-12">
                     <p>
@@ -63,8 +72,10 @@
                 <div class="col-md-12">
                     <img v-bind:src="recipe.image" v-bind:alt="recipe.title+' image'" class="rounded" style='max-height: 50vh; max-width: 100%'>
                 </div>
-                <div class="col-md-12">
-                    <input type="file" name="image" />
+                <div v-if="editing" class="col-md-12">
+                    <div class="upload-box">
+                        <input type="file" name="image" />
+                    </div>
                 </div>
             </div>
             <div class="row" style="margin-top: 20px;">
@@ -72,7 +83,7 @@
                     <h5>Steps</h5>
                 </div>
                 <div class="col-sm-6 text-right">
-                    <span>Recipe for ${recipe.forAmountOfPersons}</span>
+                    <span>Recipe for <input type="number" v-model.number="recipe.forAmountOfPersons"></span>
                 </div>
                 <div class="col-md-12">
                     <table class="table">
@@ -86,10 +97,22 @@
 
                         </tbody>
                     </table>
-                    <button v-on:click='steps.push({"amount":"", "action":"", "ingredient":""})' class="btn btn-primary">Add
+                    <button v-if="editing" v-on:click='steps.push({"amount":"", "action":"", "ingredient":""})' class="btn btn-primary">Add
                         Step
                     </button>
 
+                </div>
+
+                <div class="col-md-12">
+                    <h4>More Information</h4>
+                    <p>Calories: ???</p>
+                    <p>Ingredients: ...</p>
+                    <p>Utensils needed: ...</p>
+                    ...
+                </div>
+
+                <div v-if="editing" class="col-md-12">
+                    <button v-on:click='' class="btn btn-danger">Delete</button>
                 </div>
             </div>
 
@@ -130,6 +153,7 @@
                 recipe: {},
                 steps: [],
                 loading: false,
+                editing: false,
                 message: null,
                 newRecipe: {
                     'step_ingredent_amount': null,
@@ -148,6 +172,19 @@
             },
             methods:
             {
+                editRecipe: function()
+                {
+                    this.editing = true;
+                },
+                saveEditingChanges: function() 
+                {
+                    // TODO save
+                    this.editing = false;
+                },
+                discardEditingChanges: function()
+                {
+                    this.editing = false;
+                },
                 getRecipe: function (id)
                 {
                     this.loading = true;
