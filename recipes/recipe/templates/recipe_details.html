@@ -1,50 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <title>Recipe Details</title>
-    <meta name="viewport" content="width=device-width" , initial-scale="1.0">
-    <meta name="description" content="A simple crud app made with the vue js and django">
+{% extends "base.html" %}
 
-    <meta name="keywords" content="vuejs, django, crudapp, restapi">
-    <!-- bootstap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-        crossorigin="anonymous">
-    <!-- boostrap css -->
+{% block title %} Recipe Detail {% endblock %}
 
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
-        crossorigin="anonymous">
-
-</head>
-
-<body>
-    <nav class="navbar navbar-expand-sm navbar-light bg-light" style="margin-bottom: 20px;">
-        <a class="navbar-brand" href="/recipes/">Recipes</a>
-        
-        <div class="collapse navbar-collapse" id="navbar">
-            <ul class="navbar-nav mr-auto mt-2 mt-sm-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="/recipes/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/recipes/">Discover</a>
-                </li>
-            </ul>
-            <form class="form-inline my-2 my-sm-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-primary my-2 my-sm-0 mr-sm-2" type="submit">Search</button>
-            </form>
-            <img src="https://www.cwejournal.org/images/user.jpg" alt="User" class="rounded-circle" style="max-height: 40px;">
-
-        </div>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar"
-            aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </nav>
+{% block content %}
+    
     <div id="recipe">
-        <div v-if="!error.state" class="container">
+        <div v-if="!error.state">
             <div class="row">
                 <div class="col-sm-6">
                     <h1>${recipe.title}</h1>
@@ -115,181 +77,169 @@
                     <button v-on:click='' class="btn btn-danger">Delete</button>
                 </div>
             </div>
-
-
+        
         </div>
         <div v-else>
             <h1>Error ${error.code}: ${error.text}</h1>
         </div>
+
+        
     </div>
 
-    <!--
-        <div class="loading" v-if="loading===true">Loading&#8230;</div>
-    -->
-    </div>
+{% endblock %}
 
 
+{% block vue_script %}
 
-    <!-- bootrtap js files -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous">
-        </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js " integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous">
-        </script>
-
-    <!-- vue.js files -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5 "></script>
     <script type="text/javascript">
+    
         new Vue({
-            el: '#recipe',
-            delimiters: ['${', '}'],
-            data:
-            {
-                recipe: {},
-                steps: [],
-                loading: false,
-                editing: false,
-                message: null,
-                newRecipe: {
-                    'step_ingredent_amount': null,
-                    'step_action': null
-                },
-                error: {
-                    state: false,
-                    code: null,
-                    text: null
-                }
+        el: '#recipe',
+        delimiters: ['${', '}'],
+        data:
+        {
+            recipe: {},
+            steps: [],
+            loading: false,
+            editing: false,
+            message: null,
+            newRecipe: {
+                'step_ingredent_amount': null,
+                'step_action': null
             },
-            mounted: function ()
+            error: 
             {
-                var recipe_id = parseInt("{{recipe_id}}");
-                this.getRecipe(recipe_id);
-            },
-            methods:
-            {
-                editRecipe: function()
-                {
-                    this.editing = true;
-                },
-                saveEditingChanges: function() 
-                {
-                    // TODO save
-                    this.editing = false;
-                },
-                discardEditingChanges: function()
-                {
-                    this.editing = false;
-                },
-                getRecipe: function (id)
-                {
-                    this.loading = true;
-                    this.$http.get(`/api/recipe/${id}/`)
-                        .then((response) => 
-                        {
-                            this.recipe = response.data;
-                            this.getStepsAsTextAndPush(this.recipe.steps)
-
-                            this.loading = false;
-                        })
-                        .catch((err) => 
-                        {
-                            this.loading = false;
-                            console.log(err);
-                            this.error.state = true;
-                            this.error.code = err.status;
-                            this.error.text = err.statusText;
-                        })
-                },
-                updateRecipe: function ()
-                {
-                    this.loading = true;
-                    this.$http.put(`/api/recipe/${this.currentRecipe.recipe_id}/`, this.currentRecipe)
-                        .then((response) => 
-                        {
-                            this.loading = false;
-                            this.currentRecipe = response.data
-                            this.getRecipes()
-                        })
-                        .catch((err) => 
-                        {
-                            this.loading = false;
-                            console.log(err);
-                        })
-                },
-                deleteRecipe: function (id)
-                {
-                    this.loading = true;
-                    this.$http.delete(`/api/recipe/${id}/`)
-                        .then((response) => 
-                        {
-                            this.loading = false;
-                            this.getRecipes()
-                        })
-                        .catch((err) => 
-                        {
-                            this.loading = false;
-                            console.log(err);
-                        })
-                },
-
-                getStepsAsTextAndPush: function (stepIds)
-                {
-                    this.loading = true;
-                    for (var i = 0; i < stepIds.length; i++)
-                    {
-                        this.$http.get(`/api/step/${stepIds[i]}/`)
-                            .then((response) => 
-                            {
-                                console.log(response.data)
-                                this.steps.push(response.data);
-                            })
-                            .catch((err) => 
-                            {
-                                console.log(err);
-                            })
-                    }
-                    this.loading = false;
-                },
-                makeStepText: function (stepObject)
-                {
-                    return `${stepObject.action}`
-                },
-                getActionAndPushStep: function (id, step)
-                {
-                    this.$http.get(`/api/action/${id}/`)
-                        .then((response) => 
-                        {
-
-                        })
-                        .catch((err) => 
-                        {
-                            console.log(err);
-                        })
-                }
+                state: false,
+                code: null,
+                text: null
             }
+        },
+        mounted: function ()
+        {
+            var recipe_id = parseInt("{{recipe_id}}");
+            this.getRecipe(recipe_id);
+        },
+        methods:
+        {
+            editRecipe: function()
+            {
+                this.editing = true;
+            },
+            saveEditingChanges: function() 
+            {
+                // TODO save
+                this.editing = false;
+            },
+            discardEditingChanges: function()
+            {
+                this.editing = false;
+            },
+            getRecipe: function (id)
+            {
+                this.loading = true;
+                this.$http.get(`/api/recipe/${id}/`)
+                    .then((response) => 
+                    {
+                        this.recipe = response.data;
+                        this.getStepsAsTextAndPush(this.recipe.steps)
+
+                        this.loading = false;
+                    })
+                    .catch((err) => 
+                    {
+                        this.loading = false;
+                        console.log(err);
+                        this.error.state = true;
+                        this.error.code = err.status;
+                        this.error.text = err.statusText;
+                    })
+            },
+            updateRecipe: function ()
+            {
+                this.loading = true;
+                this.$http.put(`/api/recipe/${this.currentRecipe.recipe_id}/`, this.currentRecipe)
+                    .then((response) => 
+                    {
+                        this.loading = false;
+                        this.currentRecipe = response.data
+                        this.getRecipes()
+                    })
+                    .catch((err) => 
+                    {
+                        this.loading = false;
+                        console.log(err);
+                    })
+            },
+            deleteRecipe: function (id)
+            {
+                this.loading = true;
+                this.$http.delete(`/api/recipe/${id}/`)
+                    .then((response) => 
+                    {
+                        this.loading = false;
+                        this.getRecipes()
+                    })
+                    .catch((err) => 
+                    {
+                        this.loading = false;
+                        console.log(err);
+                    })
+            },
+
+            getStepsAsTextAndPush: function (stepIds)
+            {
+                this.loading = true;
+                for (var i = 0; i < stepIds.length; i++)
+                {
+                    this.$http.get(`/api/step/${stepIds[i]}/`)
+                        .then((response) => 
+                        {
+                            console.log(response.data)
+                            this.steps.push(response.data);
+                        })
+                        .catch((err) => 
+                        {
+                            console.log(err);
+                        })
+                }
+                this.loading = false;
+            },
+            makeStepText: function (stepObject)
+            {
+                return `${stepObject.action}`
+            },
+            getActionAndPushStep: function (id, step)
+            {
+                this.$http.get(`/api/action/${id}/`)
+                    .then((response) => 
+                    {
+
+                    })
+                    .catch((err) => 
+                    {
+                        console.log(err);
+                    })
+            }
+        }
+    })
+    
+    
+
+    $(document)
+        .one('focus.autoExpand', 'textarea.autoExpand', function ()
+        {
+            var savedValue = this.value;
+            this.value = '';
+            this.baseScrollHeight = this.scrollHeight;
+            this.value = savedValue;
         })
-
-        $(document)
-            .one('focus.autoExpand', 'textarea.autoExpand', function ()
-            {
-                var savedValue = this.value;
-                this.value = '';
-                this.baseScrollHeight = this.scrollHeight;
-                this.value = savedValue;
-            })
-            .on('input.autoExpand', 'textarea.autoExpand', function ()
-            {
-                var minRows = this.getAttribute('data-min-rows') | 0, rows;
-                this.rows = minRows;
-                rows = Math.ceil((this.scrollHeight - this.baseScrollHeight) / 24);
-                this.rows = minRows + rows;
-            });
+        .on('input.autoExpand', 'textarea.autoExpand', function ()
+        {
+            var minRows = this.getAttribute('data-min-rows') | 0, rows;
+            this.rows = minRows;
+            rows = Math.ceil((this.scrollHeight - this.baseScrollHeight) / 24);
+            this.rows = minRows + rows;
+        });
+        
     </script>
-</body>
-
-</html>
+{% endblock %}
