@@ -1,12 +1,16 @@
 {% extends "base.html" %}
 
-{% block title %}Profile{% endblock %}
+{% block title %}Profile: {{username}}{% endblock %}
 
 {% block content %}
 
-    <div class="row">
-        <div class="col-md-12">
-                <h1>Profile</h1>
+    <div id="profile">
+        <div v-if="!error.state">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>${user.displayName}</h1>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -14,5 +18,38 @@
 {% endblock %}
 
 {% block vue_script %}
+
+    <script type="text/javascript">
+        
+        new Vue({
+            el: '#profile',
+            delimiters: ['${', '}'],
+            data: {
+                user: {
+                    username: "",
+                    displayName: "",
+
+                },
+                error:
+                {
+                    state: false,
+                    code: null,
+                    text: null
+                }
+            },
+            mounted: function()
+            {
+                var username = "{{username}}";
+                this.getUser(username);
+            },
+            methods:
+            {
+                getUser: function(username)
+                {
+                    this.user.username = username;
+                }
+            }
+        })
+    </script>
 
 {% endblock %}

@@ -31,7 +31,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
 
-    path('', TemplateView.as_view(template_name='index.html'), name='home'),
+    path('', TemplateView.as_view(template_name='feed.html')),
 
     path('recipe_list/', TemplateView.as_view(template_name='recipe_list.html')),
     
@@ -39,7 +39,12 @@ urlpatterns = [
     path('recipe/<int:recipe_id>/', RecipeView.as_view(), name="recipe_details"),
 
     path('accounts/', include('django.contrib.auth.urls')),
-    path('accounts/profile/', TemplateView.as_view(template_name='profile.html'))
+
+    path('u/<username>/', TemplateView.as_view(template_name='profile.html')),
+    path('u/<username>/recipes/', TemplateView.as_view(template_name='recipes.html')),
+
+    path('u/id/<int:user_id>/recipes/', TemplateView.as_view(template_name='recipes.html'))
+    
 ]
 
 if settings.DEBUG is True:

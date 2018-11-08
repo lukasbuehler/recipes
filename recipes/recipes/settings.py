@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'recipe',
-    'rest_framework'
+    'rest_framework',
+    'filters'
 ]
 
 MIDDLEWARE = [
@@ -130,5 +131,6 @@ MEDIA_URL = "/media/"
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication', 
-    )
+    ),
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
