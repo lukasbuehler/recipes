@@ -43,6 +43,7 @@ urlpatterns = [
     path('u/<username>/', TemplateView.as_view(template_name='profile.html')),
     path('u/<username>/recipes/', TemplateView.as_view(template_name='recipes.html')),
 
+    path('u/id/<int:user_id>/', TemplateView.as_view(template_name='profile.html')),
     path('u/id/<int:user_id>/recipes/', TemplateView.as_view(template_name='recipes.html'))
     
 ]
