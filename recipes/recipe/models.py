@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -28,10 +29,19 @@ class Step(models.Model):
     def __str__(self):
         return self.text
 
+
+class RecipeUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    #favourite_recipes = models.ManyToManyField(Recipe)
+
+    def __str__(self):
+        return self.user.username
+
+
 class Recipe(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=250)
-    #author = 
+    creator = models.ForeignKey(RecipeUser, on_delete=models.CASCADE)
     #category = 
     image = models.ImageField(upload_to="images/recipes/", null=True)
     description = models.TextField()
@@ -55,3 +65,4 @@ class Recipe(models.Model):
         return self.title+" ("+str(self.id)+")"
 
     
+

@@ -3,14 +3,22 @@ from filters.mixins import (
     FiltersMixin,
 )
 import django_filters.rest_framework
-from .models import Recipe, Step, Ingredient, IngredientCategory, Utensil, UtensilCategory
+from .models import Recipe, Step, Ingredient, IngredientCategory, Utensil, UtensilCategory, RecipeUser
+
 from django.contrib.auth.models import User
-from .serializers import RecipeSerializer, StepSerializer, IngredientSerializer, IngredientCategorySerializer, UtensilSerializer, UtensilCategorySerializer, UserSerializer
+
+from .serializers import RecipeSerializer, StepSerializer, IngredientSerializer, IngredientCategorySerializer, UtensilSerializer, UtensilCategorySerializer, RecipeUserSerializer
 
 
-class RecipeViewSet(viewsets.ModelViewSet):
+class RecipeViewSet(FiltersMixin, viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
+
+    #filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+
+    filter_mappings = {
+        'creator': 'creator'
+    }
 
 class StepViewSet(viewsets.ModelViewSet):
     queryset = Step.objects.all()
@@ -33,12 +41,12 @@ class UtensilCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = UtensilCategorySerializer
 
 
-class UserViewSet(FiltersMixin, viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class RecipeUserViewSet(FiltersMixin, viewsets.ModelViewSet):
+    queryset = RecipeUser.objects.all()
+    serializer_class = RecipeUserSerializer
 
-    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    #filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
     filter_mappings = {
-        'username': 'username'
+        'username': 'user__username'
     }
