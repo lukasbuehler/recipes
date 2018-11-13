@@ -26,13 +26,15 @@
                     <h2>Recipes</h2>
                     <div class="container-fluid">
                         <div class="row">
-                            <div 
+                            <a 
                                 v-for="recipe in user.recipes.created" 
-                                class="col-lg-4 col-sm-6" style="margin-bottom: 15px;">
+                                class="col-lg-4 col-sm-6" style="margin-bottom: 15px;"
+                                v-bind:href="'/recipe/'+recipe.id+'/'"
+                                >
 
                                 <div 
                                     class="card" 
-                                    style="z-index: 999; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important">
+                                    style="z-index: 999; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important; text-decoration: none;">
 
                                     <img 
                                         class="card-img-top" 
@@ -42,10 +44,9 @@
                                         <h5 class="card-title">${recipe.title}</h5>
                                         <p class="card-text">
                                             <i v-for="(foo, i) in Math.round(recipe.rating)" class="fas fa-star" style="color: gold;"></i>
-                                        <a v-bind:href="'/recipe/'+recipe.id+'/'" class="btn btn-primary">Visit</a>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>
